@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
                 # Output statistics every 10 lines
                 if line_count % 10 == 0:
-                    output(log)
+                  output(log)
     except KeyboardInterrupt:
         # Handle interruption and print final stats
         output(log)
