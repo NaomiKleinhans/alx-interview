@@ -3,13 +3,13 @@ import sys
 
 # Initialize variables
 total_size = 0
-status_counts = {}
-valid_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
+status_counts = {'200': 0, '301': 0, '400': 0,
+                 '401': 0, '403': 0, '404': 0, '405': 0, '500': 0}
 line_count = 0
 
 
 def print_stats():
-    """Print accumulated metrics."""
+    """Print the current statistics."""
     print(f"File size: {total_size}")
     for code in sorted(status_counts.keys()):
         if status_counts[code] > 0:
@@ -20,22 +20,22 @@ try:
     for line in sys.stdin:
         line_count += 1
         try:
-            # Split the line by spaces and extract relevant parts
+            # Strip and split the line to extract parts
             parts = line.split()
+
+            # Check if the line contains the expected number of parts
             if len(parts) < 7:
                 continue
 
-            # Extract status code and file size
+            # Extract the status code and file size from the log
             status_code = parts[-2]
             file_size = parts[-1]
 
-            # Update file size if it's a number
+            # Ensure file size is a valid number
             total_size += int(file_size)
 
-            # Update status code count if it's valid
-            if status_code in valid_codes:
-                if status_code not in status_counts:
-                    status_counts[status_code] = 0
+            # Ensure status code is valid and update its count
+            if status_code in status_counts:
                 status_counts[status_code] += 1
 
         except (IndexError, ValueError):
@@ -47,9 +47,9 @@ try:
             print_stats()
 
 except KeyboardInterrupt:
-    # Handle keyboard interruption (CTRL + C)
+    # Print stats before exiting on keyboard interruption
     print_stats()
     raise
 
-# Ensure to print the final stats when the input ends
+# Ensure to print final stats after all input is processed
 print_stats()
