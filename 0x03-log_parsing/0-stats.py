@@ -20,26 +20,26 @@ try:
     for line in sys.stdin:
         line_count += 1
         try:
-            # Split line by spaces to extract the necessary parts
+            # Strip and split the line to extract parts
             parts = line.split()
 
-            # Validate that the line has the correct number of parts
+            # Check if the line contains the expected number of parts
             if len(parts) < 7:
                 continue
 
-            # Extract the status code and file size from the line
+            # Extract the status code and file size from the log
             status_code = parts[-2]
             file_size = parts[-1]
 
-            # Add to total file size (ensure file size is a valid integer)
+            # Ensure file size is a valid number
             total_size += int(file_size)
 
-            # Update the count for the valid status code
+            # Ensure status code is valid and update its count
             if status_code in status_counts:
                 status_counts[status_code] += 1
 
-        except (ValueError, IndexError):
-            # Skip the line if there's an issue parsing it (e.g., invalid file size)
+        except (IndexError, ValueError):
+            # Skip lines with invalid formatting or data
             continue
 
         # Print stats after every 10 lines
@@ -47,9 +47,9 @@ try:
             print_stats()
 
 except KeyboardInterrupt:
-    # Print stats before exiting when interrupted (CTRL + C)
+    # Print stats before exiting on keyboard interruption
     print_stats()
     raise
 
-# Ensure to print final stats when input ends
+# Ensure to print final stats after all input is processed
 print_stats()
