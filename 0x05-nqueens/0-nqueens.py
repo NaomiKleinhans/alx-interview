@@ -1,60 +1,47 @@
 #!/usr/bin/python3
 """
-Solution to the N Queens problem
+Solution to the N Queens problem.
 """
 
 import sys
 
 
-def backtrack(r, n, cols, pos, neg, board):
+def backtrack(row, n, cols, pos_diag, neg_diag, board):
     """
     Recursive backtrack function to find all solutions.
-    Args:
-        r (int): Current row being filled with a queen.
-        n (int): Size of the board (n x n).
-        cols (set): Set of columns currently under attack.
-        pos (set): Set of positive diagonals under attack.
-        neg (set): Set of negative diagonals under attack.
-        board (list of lists): Current board configuration.
     """
-    if r == n:
+    if row == n:
         # Collect solution as list of coordinates
-        solution = [[i, row.index(1)] for i, row in enumerate(board)]
+        solution = [[i, board[i].index(1)] for i in range(n)]
         print(solution)
         return
 
-    for c in range(n):
-        if c in cols or (r + c) in pos or (r - c) in neg:
+    for col in range(n):
+        if col in cols or (row + col) in pos_diag or (row - col) in neg_diag:
             continue
 
         # Place queen and mark attacks
-        cols.add(c)
-        pos.add(r + c)
-        neg.add(r - c)
-        board[r][c] = 1
+        cols.add(col)
+        pos_diag.add(row + col)
+        neg_diag.add(row - col)
+        board[row][col] = 1
 
         # Move to next row
-        backtrack(r + 1, n, cols, pos, neg, board)
+        backtrack(row + 1, n, cols, pos_diag, neg_diag, board)
 
         # Remove queen and unmark attacks
-        cols.remove(c)
-        pos.remove(r + c)
-        neg.remove(r - c)
-        board[r][c] = 0
+        cols.remove(col)
+        pos_diag.remove(row + col)
+        neg_diag.remove(row - col)
+        board[row][col] = 0
 
 
 def nqueens(n):
     """
     Initializes the N Queens problem and starts the backtracking process.
-    Args:
-        n (int): The size of the board (n x n).
     """
-    cols = set()
-    pos_diag = set()
-    neg_diag = set()
     board = [[0] * n for _ in range(n)]
-
-    backtrack(0, n, cols, pos_diag, neg_diag, board)
+    backtrack(0, n, set(), set(), set(), board)
 
 
 if __name__ == "__main__":
@@ -71,5 +58,5 @@ if __name__ == "__main__":
         print("N must be a number")
         sys.exit(1)
 
-    # Run N Queens with valid input
+    # Execute the N Queens solution with valid input
     nqueens(n)
